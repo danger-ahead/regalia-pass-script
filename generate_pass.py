@@ -12,14 +12,7 @@ allowedFont = ImageFont.truetype("fonts/Poppins-SemiBold.ttf", 65)
 
 
 def makeCertificate(student):
-    response = create_pass.create_pass(
-        student[0],
-        student[1],
-        student[2],
-        student[3]
-    )
-
-    mail.send_mail(student[0])
+    response = create_pass.create_pass(student[0], student[1], student[2], student[3])
 
     cert = template.copy()
     draw = ImageDraw.Draw(cert)
@@ -73,10 +66,15 @@ def makeCertificate(student):
     print(student[0])
     cert.save(str("img/" + student[0]) + "_pass.png")
 
+    # send email
+    mail.send_mail(student[0], student[1], response["_id"], str(response["allowed"]))
+
 
 def makeQR(data):
     qr = pyqrcode.create(data)
-    qr.png("templates/qr_code.png", scale=30, module_color="#03045E", background="#538EFF")
+    qr.png(
+        "templates/qr_code.png", scale=30, module_color="#03045E", background="#538EFF"
+    )
     return qr.get_png_size(30)
 
 
